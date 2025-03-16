@@ -27,7 +27,7 @@ enemy_group = pygame.sprite.Group()
 wave_count = 1
 enemy_spawn_delay = 1000  # milliseconds
 last_spawn_time = pygame.time.get_ticks()
-enemies_per_wave = 5
+enemies_per_wave = 10
 
 # Game loop
 running = True
@@ -70,6 +70,9 @@ while running:
     # Update game objects
     player.update(keys)  # <-- Pass keys here
     enemy_group.update()
+
+    # Detect bullet collisions with enemies
+    pygame.sprite.groupcollide(player.bullets, enemy_group, True, True)
 
     # Draw everything
     screen.fill(COLOR_BLACK)
