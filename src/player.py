@@ -1,4 +1,5 @@
 import pygame
+from config import SCREEN_WIDTH
 from bullet import auto_shoot
 
 class Player(pygame.sprite.Sprite):
@@ -15,7 +16,7 @@ class Player(pygame.sprite.Sprite):
     def move(self, keys):
         if keys[pygame.K_LEFT] and self.rect.left > 0:
             self.rect.x -= self.speed
-        if keys[pygame.K_RIGHT] and self.rect.right < 800:  # Adjust width accordingly
+        if keys[pygame.K_RIGHT] and self.rect.right < SCREEN_WIDTH:  # Adjust width accordingly
             self.rect.x += self.speed
 
     def update(self, keys):

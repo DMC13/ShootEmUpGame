@@ -1,18 +1,20 @@
 import pygame
+from config import SCREEN_WIDTH, SCREEN_HEIGHT, FPS, COLOR_BLACK
 from player import Player
 
 # Initialize Pygame
 pygame.init()
-screen = pygame.display.set_mode((800, 600))  # Game window size
+
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))  # Game window size
 clock = pygame.time.Clock()
 
 # Create Player
-player = Player(400, 550)
+player = Player(SCREEN_WIDTH/2, SCREEN_HEIGHT*0.9)  # Centered at the bottom
 all_sprites = pygame.sprite.Group(player)
 
 running = True
 while running:
-    screen.fill((0, 0, 0))  # Clear screen
+    screen.fill(COLOR_BLACK)  # Clear screen
 
     keys = pygame.key.get_pressed()
     for event in pygame.event.get():
@@ -25,6 +27,6 @@ while running:
     player.draw(screen)  # Draw bullets
 
     pygame.display.flip()
-    clock.tick(60)  # 60 FPS
+    clock.tick(FPS)  # 60 FPS
 
 pygame.quit()
