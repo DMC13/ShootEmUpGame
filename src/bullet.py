@@ -1,5 +1,11 @@
 import pygame
 
+# Initialize pygame mixer (if not initialized elsewhere)
+pygame.mixer.init()
+
+# Load the shooting sound
+shoot_sound = pygame.mixer.Sound("assets/sounds/Gunfire And Voices.mp3")
+
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__()
@@ -8,6 +14,9 @@ class Bullet(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
         self.speed = -10  # Move upward
+        
+        # Play the shoot sound when a bullet is created
+        shoot_sound.play()
 
     def update(self):
         """Move the bullet upward and remove it if it leaves the screen."""
@@ -16,7 +25,7 @@ class Bullet(pygame.sprite.Sprite):
             self.kill()  # Remove the bullet from the sprite group
 
 # Function to create bullets at regular intervals
-def auto_shoot(player_x, player_y, bullets_group, shoot_timer, shoot_interval=100):
+def auto_shoot(player_x, player_y, bullets_group, shoot_timer, shoot_interval=250):
     """Automatically shoots bullets at a fixed interval."""
     current_time = pygame.time.get_ticks()
     if current_time - shoot_timer[0] > shoot_interval:
