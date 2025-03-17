@@ -1,9 +1,10 @@
 import pygame
 import random
-from config import SCREEN_WIDTH, SCREEN_HEIGHT, BG_SPEED, FPS
+from config import SCREEN_WIDTH, SCREEN_HEIGHT, FPS
 from player import Player
 from enemy import Enemy
 from bullet import Bullet
+from background import ScrollingBackground
 
 # Initialize pygame
 pygame.init()
@@ -12,13 +13,8 @@ pygame.init()
 screen = pygame.display.set_mode((int(SCREEN_WIDTH), SCREEN_HEIGHT))
 pygame.display.set_caption("Shoot 'Em Up Game")
 
-# Load background image
-background = pygame.image.load("assets/images/background2.jpg")
-background = pygame.transform.scale(background, (int(SCREEN_WIDTH), SCREEN_HEIGHT))
-
-# Background scrolling
-bg_y1 = 0
-bg_y2 = -SCREEN_HEIGHT
+# Initialize background
+background = ScrollingBackground("assets/images/background2.jpg")
 
 # Create player instance
 player = Player(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 80)
@@ -44,18 +40,11 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
+    # Update background
+    background.update()
+
     # Get key states
     keys = pygame.key.get_pressed()
-
-    # Update background scroll
-    bg_y1 += BG_SPEED
-    bg_y2 += BG_SPEED
-
-    # Reset background position for infinite scrolling
-    if bg_y1 >= SCREEN_HEIGHT:
-        bg_y1 = -SCREEN_HEIGHT
-    if bg_y2 >= SCREEN_HEIGHT:
-        bg_y2 = -SCREEN_HEIGHT
 
     # Spawn enemy waves
     current_time = pygame.time.get_ticks()
@@ -81,10 +70,7 @@ while running:
             enemy.take_damage()  # Reduce enemy health when hit
 
     # Draw everything
-    # screen.fill((0, 0, 0))
-    screen.blit(background, (0, bg_y1))
-    screen.blit(background, (0, bg_y2))
-    
+    background.draw(screen)
     player.draw(screen)
     bullet_group.draw(screen)
 
