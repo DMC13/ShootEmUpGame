@@ -5,6 +5,7 @@ pygame.mixer.init()
 
 # Load the shooting sound
 shoot_sound = pygame.mixer.Sound("assets/sounds/Gunfire And Voices.mp3")
+shoot_sound.set_volume(0.1)
 
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, x, y):

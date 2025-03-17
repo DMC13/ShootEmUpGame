@@ -3,6 +3,7 @@ import random
 from config import SCREEN_WIDTH, SCREEN_HEIGHT, BG_SPEED, FPS, COLOR_BLACK
 from player import Player
 from enemy import Enemy
+from bullet import Bullet
 
 # Initialize pygame
 pygame.init()
@@ -22,12 +23,14 @@ bg_y2 = -SCREEN_HEIGHT
 # Create player instance
 player = Player(SCREEN_WIDTH // 2, SCREEN_HEIGHT - 80)
 
-# Enemy wave management
+# Enemy and bullet management
 enemy_group = pygame.sprite.Group()
+bullet_group = pygame.sprite.Group()
+
 wave_count = 1
 enemy_spawn_delay = 1000  # milliseconds
 last_spawn_time = pygame.time.get_ticks()
-enemies_per_wave = 10
+enemies_per_wave = 5
 
 # Game loop
 running = True
@@ -57,8 +60,7 @@ while running:
     # Spawn enemy waves
     current_time = pygame.time.get_ticks()
     if current_time - last_spawn_time > enemy_spawn_delay and len(enemy_group) < enemies_per_wave:
-        enemy_x = random.randint(50, int(SCREEN_WIDTH - 50))
-        enemy = Enemy(enemy_x, -50)  # Spawn above the screen
+        enemy = Enemy()  # Now properly spawns in lanes
         enemy_group.add(enemy)
         last_spawn_time = current_time
 
@@ -68,11 +70,15 @@ while running:
         enemies_per_wave += 2  # More enemies per wave
 
     # Update game objects
-    player.update(keys)  # <-- Pass keys here
-    enemy_group.update()
+    player.update(keys)
+    bullet_group.update()
+    enemy_group.update(screen)
 
-    # Detect bullet collisions with enemies
-    pygame.sprite.groupcollide(player.bullets, enemy_group, True, True)
+    # Check for collisions between bullets and enemies
+    for enemy in enemy_group:
+        bullet_hits = pygame.sprite.spritecollide(enemy, player.bullets, True)
+        if bullet_hits:
+            enemy.take_damage()  # Reduce enemy health when hit
 
     # Draw everything
     screen.fill(COLOR_BLACK)
@@ -80,7 +86,11 @@ while running:
     screen.blit(background, (0, bg_y2))
     
     player.draw(screen)
-    enemy_group.draw(screen)
+    bullet_group.draw(screen)
+
+    # Ensure enemy health is drawn correctly
+    for enemy in enemy_group:
+        enemy.draw(screen)
 
     pygame.display.flip()
 
