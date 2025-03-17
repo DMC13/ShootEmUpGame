@@ -1,6 +1,6 @@
 import pygame
 import random
-from config import SCREEN_WIDTH, SCREEN_HEIGHT, BG_SPEED, FPS, COLOR_BLACK
+from config import SCREEN_WIDTH, SCREEN_HEIGHT, BG_SPEED, FPS
 from player import Player
 from enemy import Enemy
 from bullet import Bullet
@@ -81,7 +81,7 @@ while running:
             enemy.take_damage()  # Reduce enemy health when hit
 
     # Draw everything
-    screen.fill(COLOR_BLACK)
+    # screen.fill((0, 0, 0))
     screen.blit(background, (0, bg_y1))
     screen.blit(background, (0, bg_y2))
     
