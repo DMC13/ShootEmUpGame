@@ -10,6 +10,8 @@ class Enemy(pygame.sprite.Sprite):
         self.health = self._assign_random_health()
         self.rect.x, self.rect.y = self._assign_random_position()
         self.speed = ENEMY_SPEED
+        self.collided_with_player = False  # Track if it reached the player
+        self.damage_timer = pygame.time.get_ticks()  # Timer for damage
 
     def _assign_random_health(self):
         return random.randint(1, 5)
@@ -20,23 +22,38 @@ class Enemy(pygame.sprite.Sprite):
         y = random.randint(-100, -40)
         return x, y
 
-    def update(self, screen):
-        self.rect.y += self.speed
-        if self.rect.top > SCREEN_HEIGHT:
+    def update(self, screen, player):
+        if not self.collided_with_player:
+            self.rect.y += self.speed
+
+        # Check if it reached the player
+        if self.rect.bottom >= player.rect.top:
+            self.collided_with_player = True
+            self.deal_damage(player)
+
+        if self.health <= 0:
             self.kill()
+
         self.draw(screen)
 
     def take_damage(self):
+        """Reduces enemy health and checks for death."""
         self.health -= 1
-        if self.health <= 0:
-            self.kill()
+
+    def deal_damage(self, player):
+        """Both enemy and player take damage every second."""
+        current_time = pygame.time.get_ticks()
+        if current_time - self.damage_timer > 1000:  # Damage once per second
+            self.health -= 1
+            player.take_damage()
+            self.damage_timer = current_time  # Reset timer
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)
         self._draw_health(screen)
 
     def _draw_health(self, screen):
-        font = pygame.font.Font(None, 80)
+        font = pygame.font.Font(None, 40)
         health_text = font.render(str(self.health), True, (255, 255, 255))
         text_rect = health_text.get_rect(center=self.rect.center)
         screen.blit(health_text, text_rect)
