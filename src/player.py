@@ -22,11 +22,11 @@ class Player(pygame.sprite.Sprite):
         if keys[pygame.K_RIGHT] and self.rect.right < SCREEN_WIDTH:
             self.rect.x += self.speed
 
-    def take_damage(self):
+    def take_damage(self, damage):
         """Reduces player health and checks for game over."""
         # current_time = pygame.time.get_ticks()
         # if current_time - self.damage_timer > 1000:  # Damage every second
-        self.health -= 1
+        self.health -= damage
             # self.damage_timer = current_time  # Reset timer
             # print(f"Player Health: {self.health}")  # Debugging
 
